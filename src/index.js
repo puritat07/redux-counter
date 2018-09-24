@@ -1,20 +1,20 @@
 import React, { Component } from 'react'
 import { render } from 'react-dom'
-import { Provider,connect } from 'react-redux'
+import { Provider, connect } from 'react-redux'
 import { createStore } from 'redux'
 
-const INCREMENT = 'INCREMENT'
 const DECREMENT = 'DECREMENT'
-
-const incCounter = () => {
-    return {
-        type: INCREMENT
-    }
-}
+const INCREMENT = 'INCREMENT'
 
 const decCounter = () => {
     return {
         type: DECREMENT
+    }
+}
+
+const incCounter = () => {
+    return {
+        type: INCREMENT
     }
 }
 
@@ -28,47 +28,50 @@ const mainReducer = (state = 0, action) => {
             return state
     }
 }
+const store = createStore(mainReducer)
 
 const mapStateToProps = (state) => {
-    return {state}
-} 
+    return {
+        count: state
+    }
+}
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        onDecrement: () => dispatch(decCounter),
-        onIncrement: () => dispatch(incCounter)
+        onIncCounter: () => {dispatch(incCounter())},
+        onDecCounter: () => {dispatch(decCounter())}
     }
 }
 
 export default class Counter extends Component {
     render() {
+        console.log(`Current State: ${this.props.count}`)
         return (
             <div>
-                {this.props.count}
-                <br/>
+                Count: {this.props.count}<br/>
                 <button
-                    onClick={() => this.props.onDecrement}
+                    onClick={this.props.onDecCounter}
                 >
-                    -
+                -
                 </button>
                 <button
-                    onClick={() => this.props.onIncrement}
+                    onClick={this.props.onIncCounter}
                 >
-                    +
+                +
                 </button>
-                
             </div>
-            
         );
     }
 }
 
-connect(mapStateToProps, mapDispatchToProps)(Counter)
-
-const store = createStore(mainReducer)
+const ConnectedCounter = connect(
+    mapStateToProps,
+    mapDispatchToProps
+    )(Counter)
 
 render(
     <Provider store={store}>
-        <Counter />
-    </Provider>, document.getElementById('root')
+        <ConnectedCounter />
+    </Provider>,
+    document.getElementById('root')
 )
